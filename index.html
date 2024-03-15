@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FHIR Questionnaire Renderer</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .question {
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+    <div id="questionnaire-container"></div>
+    <script src="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/webcomponent/assets/lib/zone.min.js"></script>
+    <script src="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/webcomponent/lhc-forms.js"></script>
+    <script src="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/fhir/R4/lformsFHIR.min.js"></script>
+    <script>
+        function fetchQuestionnaire(url) {
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch Questionnaire');
+                    }
+                    return response.json();
+                })
+                .then(data => data);
+        }
+
+        function renderQuestionnaire(questionnaire) {
+            const container = document.getElementById('questionnaire-container');
+            LForms.Util.addFormToPage(questionnaire, 'questionnaire-container', null);
+
+        }
+
+        // Replace 'your_fhir_server_url' with the actual FHIR server URL and 'questionnaire_id' with the ID of the questionnaire
+        const fhirServerUrl = 'https://fhir.echinos.eu/fhir';
+        const questionnaireId = '373';
+        const questionnaireUrl = `${fhirServerUrl}/Questionnaire/${questionnaireId}`;
+
+        fetchQuestionnaire(questionnaireUrl)
+            .then(questionnaire => renderQuestionnaire(questionnaire))
+            .catch(error => console.error(error));
+    </script>
+    <link rel="stylesheet" href="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/webcomponent/styles.css">
+</body>
+</html>
